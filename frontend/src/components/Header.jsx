@@ -38,31 +38,42 @@ const Header = () => {
             </li>
           ))}
         </ul>
-        <ul className={listClassName}>
-          {Headerconfig.buttons.map((item, index) => (
-            <li key={index}>
+        {/* <ul className={listClassName}>
+        <li>
               <NavLink
-                to={item.to}
+                to="/signin"
                 className={linkClassName}
                 onClick={closeMobileMenu}
               >
-                <button className="btn px-3 py-3 lg:mt-0 mt-2">{item.text}</button>
+                <button className="btn bg-white text-black px-3 py-2 lg:mt-0 mt-2">Sign In</button>
 
               </NavLink>
             </li>
-          ))}
-        </ul>
+            <li>
+              <NavLink
+                to="/register"
+                className={linkClassName}
+                onClick={closeMobileMenu}
+              >
+                <button className="btn px-3 py-2 lg:mt-0 mt-2 bg-[#FFC727] text-white">Register</button>
+
+              </NavLink>
+            </li>
+        </ul> */}
       </>
     );
   };
 
 
-  //For logo and responsiveness of the whole header i.e. burger menu and close button
   return (
     <header className="header">
-      <nav className="nav">
-        <NavLink to="/" className="nav__logo">
-          {Headerconfig.title}
+      <nav className="nav flex flex-row justify-start">
+        <NavLink to="/" className="nav__logo justify-start ">
+          <div className="flex flex-row justify-start items-center gap-2 w-[40vw]">
+          <div className="rounded-full w-8 h-8 bg-[#FFC727] text-white flex flex-col justify-center items-center"><p>P</p></div>
+            <h1 className="text-[#FFC727] font-semibold text-4xl">PlaceMeUP</h1>
+        
+          </div>
         </NavLink>
 
         {isMobile && (
@@ -81,8 +92,10 @@ const Header = () => {
               <IoClose />
             </div>
           </div>
-        ) : (
-          renderNavLinks()
+        ) : (<div className="flex flex-row justify-center">
+                    {renderNavLinks()}
+        </div>
+
         )}
       </nav>
     </header>

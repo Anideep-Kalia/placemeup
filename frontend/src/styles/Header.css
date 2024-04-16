@@ -17,18 +17,14 @@
   .nav {
     display: flex;
     align-items: center;
-    justify-content: space-between;
     position: relative;
     height: 3.5rem;
-    margin: 1rem;
+    margin: 0.5rem;
   }
   
   .nav__logo {
-    color: black;
     transition: color 0.4s;
-    letter-spacing: 0.1cm;
-    font-weight: 400;
-    font-size: 1.25rem;
+ 
   }
   
   .nav__toggle,
@@ -139,14 +135,11 @@
   
 .btn {
 
-  border: 1px solid linear-gradient(270deg, #C7D800 0%, #2BD500 165.71%);
+  border: 1px solid #B7B3B3;
   border-radius: 10px;
-  background: linear-gradient(270deg, #C7D800 0%, #2BD500 165.71%);
-  color: #fff;
   font-size: 1.2rem;
   font-weight: 550;
   letter-spacing: 0em;
-  cursor: pointer;
   text-align: center;
   appearance: button;
   display: flex;
@@ -171,4 +164,5 @@
 .btn:hover {
   transform: scale(0.98);
 }
-  
+
+

@@ -11,7 +11,7 @@ const PORT = 5000;
 const app = express();
 const server = new ApolloServer({
   typeDefs,
-  // resolvers,
+  resolvers,
   context: ({ req }) => ({ req, pubsub }),
 });
 

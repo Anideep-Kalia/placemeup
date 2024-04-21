@@ -2,20 +2,20 @@ const { ApolloServer, PubSub } = require('apollo-server-express');
 const express = require('express');
 const { dbConnection } = require('./db');
 const cors = require('cors');
-const typeDefs = require('./graphql/typeDefs');
-const resolvers = require('./graphql/resolvers');
+// const typeDefs = require('./graphql/typeDefs');
+// const resolvers = require('./graphql/resolvers');
 
 const pubsub = new PubSub();
 const PORT = 5000;
 
 const app = express();
-const server = new ApolloServer({
-  typeDefs,
-  resolvers,
-  context: ({ req }) => ({ req, pubsub }),
-});
+// const server = new ApolloServer({
+//   typeDefs,
+//   // resolvers,
+//   context: ({ req }) => ({ req, pubsub }),
+// });
 
-server.applyMiddleware({ app });
+// server.applyMiddleware({ app });
 
 dbConnection();
 

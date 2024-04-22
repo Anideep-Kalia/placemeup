@@ -11,7 +11,7 @@ const collegeAdminInfoSchema = new mongoose.Schema({
         name: String,
         role: String,
         stipend: Number,
-        link:string,
+        link:String,
         expire: Number,
         desc:String,
     }],

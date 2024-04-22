@@ -1,19 +1,23 @@
 const { gql } = require('apollo-server-express');
 
-const typeDefs = gql`
+module.exports = gql`
   type Student {
     id: ID!
     userid: String!
     password: String!
+    college: String!
+    name:String!
+    token:String!
   }
 
   type StudentInfo {
     id: ID!
-    studentId: ID!
+    userid: String!
+    studentId: String!
     name: String!
     college: String!
-    companiesApplied: [String!]!
-    daysLoggedIn: [Date!]!
+    companiesApplied: [String]
+    daysLoggedIn: [String]
   }
 
   type SuperAdmin {
@@ -49,27 +53,29 @@ const typeDefs = gql`
     getStudentInfo(studentId: ID!): StudentInfo
     getStudentByCollege(college: String!): [StudentInfo!]!
     getStudentCompanyApplied(company: String!): [StudentInfo!]!
-    getDaysLoggedIn(studentId: ID!): [Date!]!
+    getDaysLoggedIn(studentId: ID!): [String!]!
 
     getCollegeAdmin(adminId: ID!): CollegeAdmin
     getCompaniesList(adminId: ID!): [Company!]!
     getCollegeDomain(college: String!): String!
+
+    getCollegeAdminInfo(adminId: ID!): CollegeAdminInfo
+    getAllCollegeAdminInfo: [CollegeAdminInfo!]!
   }
 
   type Mutation {
-      registerStudent(userid: String!, password: String!, college: String!): Student!
-      loginStudent(userid: String!, password: String!): StudentInfo
+    registerStudent(userid: String!, password: String!, college: String!, confirmPassword:String!, name:String!): Student!
+    loginStudent(userid: String!, password: String!): Student!
     
-    updateStudentInfo(studentId: ID!, name: String, college: String, companiesApplied: [String], daysLoggedIn: [Date]): StudentInfo!
-    addStudentInfo(studentId: ID!, name: String!, college: String!, companiesApplied: [String!], daysLoggedIn: [Date!]): StudentInfo!
-    deleteStudentInfo(studentId: ID!): Boolean
+    addStudentInfo(studentId: String, name: String, college: String, companiesApplied: [String], daysLoggedIn: [String], userid: String): StudentInfo!
+    updateStudentInfo(studentId: ID!, name: String, college: String, companiesApplied: [String], daysLoggedIn: [String]): StudentInfo!
+    deleteStudentInfo(studentId: ID!): Boolean!
 
+    registerCollegeAdmin(email: String!, password: String!): CollegeAdmin!
+    loginCollegeAdmin(email: String!, password: String!): CollegeAdmin!
 
-      registerCollegeAdmin(email: String!, password: String!): CollegeAdmin!
-    updateCollegeAdmin(adminId: ID!, email: String, password: String): CollegeAdmin!
-    deleteCollegeAdmin(adminId: ID!): Boolean
-      loginCollegeAdmin(email: String!, password: String!): CollegeAdmin
+    createCollegeAdminInfo(adminId: ID!, collegeDomain: String!, collegeName: String!): CollegeAdminInfo!
+    updateCollegeAdminInfo(adminId: ID!, collegeDomain: String, collegeName: String): CollegeAdminInfo!
+    deleteCollegeAdminInfo(adminId: ID!): Boolean!
   }
 `;
-
-module.exports = typeDefs;

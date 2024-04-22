@@ -30,7 +30,7 @@ function generateToken(user) {
 
 module.exports = {
   Mutation: {
-    async login(_, { email, password }) {
+    async loginCollegeAdmin(_, { email, password }) {
       try {
         loginInputSchema.parse({ email, password });
       } catch (error) {
@@ -64,7 +64,7 @@ module.exports = {
         token
       };
     },
-    async register(_, { registerInput: { email, college, password, confirmPassword } }) {
+    async registerCollegeAdmin(_, { registerInput: { email, college, password, confirmPassword } }) {
       try {
         registerInputSchema.parse({ email, college, password, confirmPassword });
       } catch (error) {

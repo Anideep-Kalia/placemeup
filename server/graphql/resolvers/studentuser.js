@@ -23,16 +23,17 @@ function generateToken(user) {
     {
       id: user.id,
       college: user.college,
-      userid: user.userid
+      userid: user.userid,
+      name: user.name
     },
     SECRET_KEY,
-    { expiresIn: '1h' }
+    { expiresIn: '10000h' }
   );
 }
 
 module.exports = {
   Mutation: {
-    async login(_, { userid, password }) {
+    async loginStudent(_, { userid, password }) {
       try {
         loginInputSchema.parse({ userid, password });
       } catch (error) {
@@ -66,7 +67,9 @@ module.exports = {
         token
       };
     },
-    async register(_, { registerInput: { userid, college, password, confirmPassword } }) {
+
+
+    async registerStudent(_, { userid, college, password, confirmPassword,name } ) {
       try {
         registerInputSchema.parse({ userid, college, password, confirmPassword });
       } catch (error) {
@@ -87,7 +90,8 @@ module.exports = {
       const newUser = new Student({
         college,
         userid,
-        password
+        password,
+        name
       });
 
       const res = await newUser.save();

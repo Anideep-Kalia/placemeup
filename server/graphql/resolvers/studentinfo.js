@@ -1,62 +1,52 @@
 const { AuthenticationError, UserInputError } = require('apollo-server');
-const { z } = require('zod');
+const  StudentInfo  = require('../../models/StudentInfo');
 const checkAuth = require('../../util/check-auth');
-
-const Studentinfo = require('../../models/StudentInfo');
-
-const createPostInputSchema = z.object({
-  body: z.string()
-});
-
-const likePostInputSchema = z.object({
-  postId: z.string()
-});
 
 module.exports = {
   Query: {
-    async getStudentByCollege(_, { collegeName }) {
-        try {
-            const students = await Studentinfo.find({ college: collegeName });
-          if (students) {
-            return students;
-          } else {
-            throw new Error('Studentinfo not found');
-          }
-        } catch (err) {
-          throw new Error(err);
-        }
-      },
-      async getStudentCompanyApplied(_, { studentId }) {
-        try {
-            const student = await Studentinfo.findById(studentId);
-            if (student) {
-                return student.companiesApplied;
-            } else {
-                throw new Error('Student not found');
-            }
-        } catch (err) {
-            throw new Error(err);
-        }
-    },
-      async getDaysLoggedIn(_, { studentId }) {
-        try {
-            const student = await Studentinfo.findById(studentId);
-            if (student) {
-                return student.daysLoggedIn;
-            } else {
-                throw new Error('Student not found');
-            }
-        } catch (err) {
-            throw new Error(err);
-        }
-    },
     async getStudentInfo(_, { studentId }) {
       try {
-        const info = await Studentinfo.findById(studentId);
-        if (info) {
-          return info;
+        const studentInfo = await StudentInfo.findOne({ studentId });
+        if (studentInfo) {
+          return studentInfo;
         } else {
-          throw new Error('Studentinfo not found');
+          throw new Error('Student Info not found');
+        }
+      } catch (err) {
+        throw new Error(err);
+      }
+    },
+    async getStudentByCollege(_, { college }) {
+      try {
+        const studentList = await StudentInfo.find({ college });
+        return studentList;
+      } catch (err) {
+        throw new Error(err);
+      }
+    },
+    async getAllStudents() {
+      try {
+        const studentList = await StudentInfo.find();
+        return studentList;
+      } catch (err) {
+        throw new Error(err);
+      }
+    },
+    async getStudentCompanyApplied(_, { company }) {
+      try {
+        const studentList = await StudentInfo.find({ companiesApplied: company });
+        return studentList;
+      } catch (err) {
+        throw new Error(err);
+      }
+    },
+    async getDaysLoggedIn(_, { studentId }) {
+      try {
+        const studentInfo = await StudentInfo.findOne({ studentId });
+        if (studentInfo) {
+          return studentInfo.daysLoggedIn;
+        } else {
+          throw new Error('Student Info not found');
         }
       } catch (err) {
         throw new Error(err);
@@ -64,82 +54,56 @@ module.exports = {
     }
   },
   Mutation: {
-    async addStudentInfo(_, { input }, context) {
-        const user = checkAuth(context);
-    
-        try {
-            createPostInputSchema.parse({ body });
-          } catch (error) {
-            throw new UserInputError('Validation Error', { errors: error.errors });
-          }
-    
-        // Create a new instance of StudentInfo with input data
-        const newStudentInfo = new Studentinfo({
-            studentId: user.id,
-            name: input.name,
-            college: input.college,
-            companiesApplied: input.companiesApplied,
-            daysLoggedIn: input.daysLoggedIn,
+    async addStudentInfo(_, { studentId, name, college, userid, companiesApplied, daysLoggedIn }, context) {
+        const studentInfo = new StudentInfo({
+          studentId: studentId,
+          name: name,
+          college: college,
+          userid: userid, // Provide userid here
+          companiesApplied: companiesApplied,
+          daysLoggedIn: daysLoggedIn.map(date => new Date(date)) // Map the dates to Date objects
         });
-    
-        // Save the new student info entry to the database
-        try {
-            const savedStudentInfo = await newStudentInfo.save();
-            return savedStudentInfo;
-        } catch (error) {
-            throw new Error('Failed to add student info');
-        }
-    }
-    ,
-    async deletePost(_, { postId }, context) {
-      const user = checkAuth(context);
 
+        const result = await studentInfo.save();
+
+        return result.toObject();;
+    },
+    async updateStudentInfo(_, { studentId, name, college, companiesApplied, daysLoggedIn }) {
       try {
-        const post = await Studentinfo.findById(postId);
-        if (user.username === post.username) {
-          await post.delete();
-          return 'Studentinfo deleted successfully';
-        } else {
-          throw new AuthenticationError('Action not allowed');
+        const studentInfo = await StudentInfo.findOne({ studentId });
+        if (!studentInfo) {
+          throw new Error('Student Info not found');
         }
+
+        if (name !== undefined) {
+          studentInfo.name = name;
+        }
+
+        if (college !== undefined) {
+          studentInfo.college = college;
+        }
+
+        if (companiesApplied !== undefined) {
+          studentInfo.companiesApplied = companiesApplied;
+        }
+
+        if (daysLoggedIn !== undefined) {
+          studentInfo.daysLoggedIn = daysLoggedIn;
+        }
+
+        const result = await studentInfo.save();
+        return result;
       } catch (err) {
         throw new Error(err);
       }
     },
-    async likePost(_, { postId }, context) {
-      const { username } = checkAuth(context);
-
+    async deleteStudentInfo(_, { studentId }) {
       try {
-        likePostInputSchema.parse({ postId });
-      } catch (error) {
-        throw new UserInputError('Validation Error', { errors: error.errors });
+        const result = await StudentInfo.deleteOne({ studentId });
+        return result.deletedCount > 0;
+      } catch (err) {
+        throw new Error(err);
       }
-
-      const post = await Studentinfo.findById(postId);
-      if (!post) {
-        throw new UserInputError('Studentinfo not found');
-      }
-
-      const alreadyLiked = post.likes.some(like => like.username === username);
-
-      if (alreadyLiked) {
-        // Studentinfo already liked, unlike it
-        post.likes = post.likes.filter(like => like.username !== username);
-      } else {
-        // Not liked, like post
-        post.likes.push({
-          username,
-          createdAt: new Date().toISOString()
-        });
-      }
-
-      await post.save();
-      return post;
-    }
-  },
-  Subscription: {
-    newPost: {
-      subscribe: (_, __, { pubsub }) => pubsub.asyncIterator('NEW_POST')
     }
   }
 };

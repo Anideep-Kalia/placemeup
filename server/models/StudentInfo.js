@@ -2,10 +2,8 @@
 const mongoose = require('mongoose');
 
 const studentInfoSchema = new mongoose.Schema({
-    studentId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Student'
-    },
+    studentId: String,
+    userid:String,
     name:{
         type: String,
         required:true
@@ -18,7 +16,7 @@ const studentInfoSchema = new mongoose.Schema({
         type: String
     }],
     daysLoggedIn: [{
-        type: Date
+        type: String
     }]
 });
 

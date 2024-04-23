@@ -91,7 +91,7 @@ module.exports = gql`
 
     createCollegeInfo(collegeDomain: String!, collegeName: String!): CollegeInfo! #
     addCompanyToCollegeInfo(company: CompanyInput!): CollegeInfo! #
-    updateCollegeInfo(collegeDomain: String, collegeName: String, company: [CompanyInput]): CollegeInfo!
-    deleteCollegeInfo(adminId: ID!): Boolean!
+    updateCollegeInfo(collegeDomain: String, collegeName: String, company: [CompanyInput]): CollegeInfo! #
+    deleteCollegeInfo(adminId: ID!): Boolean! #
     }
 `;

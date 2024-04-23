@@ -10,7 +10,6 @@ module.exports = {
   //   commentCount: (parent) => parent.comments.length
   // },
   Query: {
-    // ...postsResolvers.Query
     ...collegeinfoResolvers.Query,
     ...studentinfoResolvers.Query
   },

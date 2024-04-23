@@ -21,8 +21,6 @@ module.exports = {
     ...studentinfoResolvers.Mutation,
     ...causersResolvers.Mutation,
     ...collegeinfoResolvers.Mutation,
-    // ...postsResolvers.Mutation,
-    // ...commentsResolvers.Mutation
   },
   // Subscription: {
   //   ...postsResolvers.Subscription

@@ -2,7 +2,7 @@
 const studentusersResolvers = require('./studentuser');
 const studentinfoResolvers = require('./studentinfo');
 const causersResolvers = require('./causer');
-const cainfoResolvers = require('./cainfo');
+const collegeinfoResolvers = require('./collegeinfo');
 
 // const commentsResolvers = require('./comments');
 
@@ -13,13 +13,14 @@ module.exports = {
   // },
   Query: {
     // ...postsResolvers.Query
-    ...cainfoResolvers.Query
+    ...collegeinfoResolvers.Query,
+    ...studentinfoResolvers.Query
   },
   Mutation: {
     ...studentusersResolvers.Mutation,
     ...studentinfoResolvers.Mutation,
     ...causersResolvers.Mutation,
-    ...cainfoResolvers.Mutation,
+    ...collegeinfoResolvers.Mutation,
     // ...postsResolvers.Mutation,
     // ...commentsResolvers.Mutation
   },

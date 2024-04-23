@@ -1,12 +1,11 @@
-const { AuthenticationError, UserInputError } = require('apollo-server');
 const  StudentInfo  = require('../../models/StudentInfo');
 const checkAuth = require('../../util/check-auth');
 
 module.exports = {
   Query: {
-    async getStudentInfo(_, { studentId }) {
+    async getStudentInfo(_, { userid }) {
       try {
-        const studentInfo = await StudentInfo.findOne({ studentId });
+        const studentInfo = await StudentInfo.findOne({ userid });
         if (studentInfo) {
           return studentInfo;
         } else {
@@ -40,9 +39,11 @@ module.exports = {
         throw new Error(err);
       }
     },
-    async getDaysLoggedIn(_, { studentId }) {
+    async getDaysLoggedIn(_, {}, context) {
       try {
-        const studentInfo = await StudentInfo.findOne({ studentId });
+        const user = checkAuth(context);
+        const { userid } = user;
+        const studentInfo = await StudentInfo.findOne({ userid });
         if (studentInfo) {
           return studentInfo.daysLoggedIn;
         } else {
@@ -54,52 +55,100 @@ module.exports = {
     }
   },
   Mutation: {
-    async addStudentInfo(_, { studentId, name, college, userid, companiesApplied, daysLoggedIn }, context) {
-        const studentInfo = new StudentInfo({
-          studentId: studentId,
-          name: name,
-          college: college,
-          userid: userid, // Provide userid here
-          companiesApplied: companiesApplied,
-          daysLoggedIn: daysLoggedIn.map(date => new Date(date)) // Map the dates to Date objects
-        });
-
-        const result = await studentInfo.save();
-
-        return result.toObject();;
-    },
-    async updateStudentInfo(_, { studentId, name, college, companiesApplied, daysLoggedIn }) {
+    async addCompanyToStudentInfo(_, { company:{name, role,stipend, link, expire, desc} }, context){
       try {
-        const studentInfo = await StudentInfo.findOne({ studentId });
+        const user = checkAuth(context);
+        const { userid } = user; 
+        const studentInfo = await StudentInfo.findOne({ userid });
+
         if (!studentInfo) {
-          throw new Error('Student Info not found');
+          throw new Error('Student not found');
         }
 
-        if (name !== undefined) {
-          studentInfo.name = name;
-        }
+        const newCompany = {
+          name,
+          role,
+          stipend,
+          link,
+          expire,
+          desc
+        };
+        studentInfo.companiesApplied.push(newCompany);
 
-        if (college !== undefined) {
-          studentInfo.college = college;
-        }
+        // Save the updated student information
+        await studentInfo.save();
 
-        if (companiesApplied !== undefined) {
-          studentInfo.companiesApplied = companiesApplied;
-        }
-
-        if (daysLoggedIn !== undefined) {
-          studentInfo.daysLoggedIn = daysLoggedIn;
-        }
-
-        const result = await studentInfo.save();
-        return result;
-      } catch (err) {
-        throw new Error(err);
+        return studentInfo;
+      } catch (error) {
+        throw new Error(error);
       }
     },
-    async deleteStudentInfo(_, { studentId }) {
+    async addStudentInfo(_, {}, context) {
+      const user = checkAuth(context);
+      const { userid } = user; // Extract userid from user object
+    
+      let studentInfo = await StudentInfo.findOne({ userid });
+    
+      if (!studentInfo) {
+        studentInfo = new StudentInfo({
+          name: user.name,
+          college: user.college,
+          userid: userid, // Use extracted userid
+          companiesApplied: [],
+          daysLoggedIn: [new Date()]
+        });
+      } else {
+        studentInfo.daysLoggedIn.push(new Date());
+      }
+    
+      const result = await studentInfo.save();
+    
+      return result.toObject();
+    },
+    async updateStudentInfo(_, { name, companiesApplied, daysLoggedIn }, context) {
       try {
-        const result = await StudentInfo.deleteOne({ studentId });
+        const user = checkAuth(context);
+        const { userid } = user;
+        let studentInfo = await StudentInfo.findOne({ userid });
+    
+        if (!studentInfo) {
+          throw new Error('Student info not found');
+        }
+    
+        if (name) {
+          studentInfo.name = name;
+        }
+    
+        if (companiesApplied) {
+          studentInfo.companiesApplied = companiesApplied;
+        }
+    
+        if (daysLoggedIn) {
+          const lastLoggedDate = new Date(studentInfo.daysLoggedIn[studentInfo.daysLoggedIn.length - 1]);
+          const currentDate = new Date();
+          
+          if (lastLoggedDate.toDateString() !== currentDate.toDateString()) {
+            studentInfo.daysLoggedIn.push(currentDate);
+          }
+        } else {
+          const lastLoggedDate = new Date(studentInfo.daysLoggedIn[studentInfo.daysLoggedIn.length - 1]);
+          const currentDate = new Date();
+          
+          if (lastLoggedDate.toDateString() !== currentDate.toDateString()) {
+            studentInfo.daysLoggedIn.push(currentDate);
+          }
+        }
+    
+        const result = await studentInfo.save();
+    
+        return result.toObject();
+      } catch (error) {
+        throw new Error('Error updating student info: ' + error.message);
+      }
+    },
+    async deleteStudentInfo(_, { userid }) {
+      try {
+        const result = await StudentInfo.deleteOne({ userid });
         return result.deletedCount > 0;
       } catch (err) {
         throw new Error(err);

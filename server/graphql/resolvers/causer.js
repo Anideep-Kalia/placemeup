@@ -7,12 +7,12 @@ const { SECRET_KEY } = require('../../config');
 const Admin = require('../../models/CAUser');
 
 const loginInputSchema = z.object({
-  email: z.string(),
+  adminId: z.string(),
   password: z.string()
 });
 
 const registerInputSchema = z.object({
-  email: z.string(),
+  adminId: z.string(),
   password: z.string(),
   confirmPassword: z.string()
 });
@@ -21,28 +21,28 @@ function generateToken(user) {
   return jwt.sign(
     {
       id: user.id,
-      email: user.email
+      adminId: user.adminId
     },
     SECRET_KEY,
-    { expiresIn: '1h' }
+    { expiresIn: '10000h' }
   );
 }
 
 module.exports = {
   Mutation: {
-    async loginCollegeAdmin(_, { email, password }) {
+    async loginCollegeAdmin(_, { adminId, password }) {
       try {
-        loginInputSchema.parse({ email, password });
+        loginInputSchema.parse({ adminId, password });
       } catch (error) {
         throw new UserInputError('Validation Error', { errors: error.errors });
       }
 
-      const user = await Admin.findOne({ email });
+      const user = await Admin.findOne({ adminId });
 
       if (!user) {
         throw new UserInputError('Admin not found', {
           errors: {
-            email: 'Admin not found'
+            adminId: 'Admin not found'
           }
         });
       }
@@ -64,18 +64,18 @@ module.exports = {
         token
       };
     },
-    async registerCollegeAdmin(_, { registerInput: { email, college, password, confirmPassword } }) {
+    async registerCollegeAdmin(_, { adminId, college, password, confirmPassword,name }) {
       try {
-        registerInputSchema.parse({ email, college, password, confirmPassword });
+        registerInputSchema.parse({ adminId, password, confirmPassword });
       } catch (error) {
         throw new UserInputError('Validation Error', { errors: error.errors });
       }
 
-      const existingUser = await Admin.findOne({ email });
+      const existingUser = await Admin.findOne({ adminId });
       if (existingUser) {
-        throw new UserInputError('email is taken', {
+        throw new UserInputError('adminId is taken', {
           errors: {
-            email: 'This email is taken'
+            adminId: 'This adminId is taken'
           }
         });
       }
@@ -84,8 +84,9 @@ module.exports = {
 
       const newUser = new Admin({
         college,
-        email,
-        password
+        adminId,
+        password,
+        name
       });
 
       const res = await newUser.save();

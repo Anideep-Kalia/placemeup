@@ -2,7 +2,6 @@
 const mongoose = require('mongoose');
 
 const studentInfoSchema = new mongoose.Schema({
-    studentId: String,
     userid:String,
     name:{
         type: String,
@@ -13,7 +12,12 @@ const studentInfoSchema = new mongoose.Schema({
         required: true
     },
     companiesApplied: [{
-        type: String
+        name: String,
+        role: String,
+        stipend: Number,
+        link:String,
+        expire: Number,
+        desc:String,
     }],
     daysLoggedIn: [{
         type: String

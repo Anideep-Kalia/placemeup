@@ -11,12 +11,11 @@ module.exports = gql`
   }
 
   type StudentInfo {
-    id: ID!
-    userid: String!
-    studentId: String!
+    id: ID
+    userid: String
     name: String!
     college: String!
-    companiesApplied: [String]
+    companiesApplied: [Company]
     daysLoggedIn: [String]
   }
 
@@ -28,8 +27,11 @@ module.exports = gql`
 
   type CollegeAdmin {
     id: ID!
-    email: String!
+    adminId: String!
     password: String!
+    college: String!
+    name:String!
+    token:String!
   }
 
   type Company {
@@ -40,42 +42,56 @@ module.exports = gql`
     expire: Int!
     desc: String!
   }
+  
+  input CompanyInput {
+    name: String!
+    role: String!
+    stipend: Float!
+    link: String!
+    expire: Int!
+    desc: String!
+  }
 
-  type CollegeAdminInfo {
-    id: ID!
-    adminId: ID!
+  type CollegeInfo {
+    id: ID
+    adminId: ID
     companiesList: [Company!]!
     collegeDomain: String!
     collegeName: String!
   }
 
   type Query {
-    getStudentInfo(studentId: ID!): StudentInfo
-    getStudentByCollege(college: String!): [StudentInfo!]!
+    getAllStudents:[StudentInfo!]! #
+    getStudentInfo(userid: String!): StudentInfo #
+    getStudentByCollege(college: String!): [StudentInfo!]! #
+    getDaysLoggedIn: [String!]! #
     getStudentCompanyApplied(company: String!): [StudentInfo!]!
-    getDaysLoggedIn(studentId: ID!): [String!]!
 
     getCollegeAdmin(adminId: ID!): CollegeAdmin
-    getCompaniesList(adminId: ID!): [Company!]!
-    getCollegeDomain(college: String!): String!
 
-    getCollegeAdminInfo(adminId: ID!): CollegeAdminInfo
-    getAllCollegeAdminInfo: [CollegeAdminInfo!]!
+    getAllCollegeInfo: [CollegeInfo!]! #
+    getCollegeInfo(adminId: ID!): CollegeInfo #
+    getCompaniesList(adminId: ID!): [Company!]! #
+    getCollegeDomain(college: String!): String! #
   }
 
   type Mutation {
-    registerStudent(userid: String!, password: String!, college: String!, confirmPassword:String!, name:String!): Student!
-    loginStudent(userid: String!, password: String!): Student!
+    registerStudent(userid: String!, password: String!, college: String!, confirmPassword:String!, name:String!): Student! #
+    loginStudent(userid: String!, password: String!): Student! #
     
-    addStudentInfo(studentId: String, name: String, college: String, companiesApplied: [String], daysLoggedIn: [String], userid: String): StudentInfo!
-    updateStudentInfo(studentId: ID!, name: String, college: String, companiesApplied: [String], daysLoggedIn: [String]): StudentInfo!
-    deleteStudentInfo(studentId: ID!): Boolean!
+    
+    registerCollegeAdmin(adminId: String!, password: String!, college: String!, confirmPassword:String!, name:String!): CollegeAdmin! #
+    loginCollegeAdmin(adminId: String!, password: String!): CollegeAdmin! #
 
-    registerCollegeAdmin(email: String!, password: String!): CollegeAdmin!
-    loginCollegeAdmin(email: String!, password: String!): CollegeAdmin!
+    addStudentInfo: StudentInfo! #
+    addCompanyToStudentInfo(company: CompanyInput!): StudentInfo! #
+    updateStudentInfo(name: String, companiesApplied: [CompanyInput], daysLoggedIn: [String]): StudentInfo!
+    deleteStudentInfo(userid:String!): Boolean! #
+    
 
-    createCollegeAdminInfo(adminId: ID!, collegeDomain: String!, collegeName: String!): CollegeAdminInfo!
-    updateCollegeAdminInfo(adminId: ID!, collegeDomain: String, collegeName: String): CollegeAdminInfo!
-    deleteCollegeAdminInfo(adminId: ID!): Boolean!
-  }
+    createCollegeInfo(collegeDomain: String!, collegeName: String!): CollegeInfo! #
+    addCompanyToCollegeInfo(company: CompanyInput!): CollegeInfo! #
+    updateCollegeInfo(collegeDomain: String, collegeName: String, company: [CompanyInput]): CollegeInfo!
+    deleteCollegeInfo(adminId: ID!): Boolean!
+    }
 `;

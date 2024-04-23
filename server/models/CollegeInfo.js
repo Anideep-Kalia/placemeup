@@ -1,12 +1,8 @@
 // College Admin Information Schema
 const mongoose = require('mongoose');
 
-const collegeAdminInfoSchema = new mongoose.Schema({
-    adminId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'CollegeAdmin',
-        required: true
-    },
+const collegeInfoSchema = new mongoose.Schema({
+    adminId: String,
     companiesList: [{
         name: String,
         role: String,
@@ -25,6 +21,6 @@ const collegeAdminInfoSchema = new mongoose.Schema({
     },
 });
 
-const CollegeAdminInfo = mongoose.model('CollegeAdminInfo', collegeAdminInfoSchema);
+const CollegeInfo = mongoose.model('CollegeInfo', collegeInfoSchema);
 
-module.exports = CollegeAdminInfo;
+module.exports = CollegeInfo;

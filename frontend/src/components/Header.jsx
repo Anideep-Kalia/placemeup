@@ -1,23 +1,32 @@
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
-import { IoClose, IoMenu } from "react-icons/io5";
+import { IoClose, IoMenu, IoPerson } from "react-icons/io5";
 import { useMediaQuery } from "react-responsive";
 import "../styles/Header.css"
 import { Headerconfig } from "../config"
+import { FaAngleDown, FaAngleUp } from "react-icons/fa6";
 
-const Header = () => {
+const Header = ({val}) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const isMobile = useMediaQuery({ maxWidth: "1150px" });
+  const [isUser, setIsUser] = useState(true);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
+  const toggleProfile =() => {
+    setIsProfileOpen(!isProfileOpen)
+  }
 
   const closeMobileMenu = () => {
     if (isMobile) {
       setIsMenuOpen(false);
     }
   };
+  console.log(val)
+  const listClassName = isMobile ? "nav__list" : "nav__list__web";
+  const linkClassName = "nav__link";
 
   const renderNavLinks = () => {
     const listClassName = isMobile ? "nav__list" : "nav__list__web";
@@ -25,20 +34,26 @@ const Header = () => {
 // for the menu with buttons for both small and large devices
     return (
       <>
-        <ul className={listClassName}>
+        <ul className={`${listClassName} `}>
           {Headerconfig.navItems.map((item, index) => (
+            
             <li key={index}>
               <NavLink
                 to={item.to}
-                className={linkClassName}
+                className={` ${linkClassName} `}
                 onClick={closeMobileMenu}
               >
+                <p className={`${val === index ? "text-[#FFC727]" : ""}`}>
                 {item.text}
+                </p>
+                
               </NavLink>
             </li>
           ))}
         </ul>
-        {/* <ul className={listClassName}>
+
+        {/* {isUser && 
+        <ul className={listClassName}>
         <li>
               <NavLink
                 to="/signin"
@@ -59,7 +74,8 @@ const Header = () => {
 
               </NavLink>
             </li>
-        </ul> */}
+        </ul>
+        } */}
       </>
     );
   };
@@ -75,13 +91,6 @@ const Header = () => {
         
           </div>
         </NavLink>
-
-        {isMobile && (
-          <div className="nav__toggle" id="nav-toggle" onClick={toggleMenu}>
-            <IoMenu />
-          </div>
-        )}
-
         {isMobile ? (
           <div
             className={`nav__menu  ${isMenuOpen ? "show-menu" : ""}`}
@@ -97,6 +106,18 @@ const Header = () => {
         </div>
 
         )}
+
+        {isMobile && (
+          <>
+          <div className="nav__toggle md:w-[40%] w-[34%] lg:w-full  flex flex-row justify-start" id="nav-toggle" onClick={toggleMenu}>
+            <IoMenu className="text-4xl" />
+          </div>
+
+        </>
+        )
+      }
+
+  
       </nav>
     </header>
   );

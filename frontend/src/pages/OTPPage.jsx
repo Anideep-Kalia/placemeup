@@ -12,7 +12,7 @@ function OTPPage() {
     // Implement your OTP verification logic here
     console.log("Verifying OTP:", otp, email);
     // Example: Redirect to dashboard after OTP verification
-    navigate("/dashboard");
+    navigate("/user-dashboard");
   };
 
   return (

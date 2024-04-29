@@ -11,8 +11,8 @@ function Homepage() {
   const [selectedOption, setSelectedOption] = useState(null); // State to store selected option
 
   const predefinedNames = [
-    { name: "NIT Kurushetra", link: "/login/NITK" },
-    { name: "NIT Meghalaya", link: "/login/NITM" }
+    { name: "NIT Kurushetra", link: "/register/NITK" },
+    { name: "NIT Meghalaya", link: "/register/NITM" }
   ];
 
   const handleChange = (e) => {
@@ -47,7 +47,7 @@ function Homepage() {
 
   return (
     <>
-      <Header />
+      <Header val={0} />
       <div className="flex flex-row justify-between items-center mx-12 ">
         <div className="w-[30%] ">
           <h1 className="text-[2.5rem] leading-10 tracking-wide font-semibold mb-4">Connecting Students and Colleges for Placement Success</h1>

@@ -1,6 +1,7 @@
 const Headerconfig = {
     title: "PlaceMeUp",
     navItems:  [
+        { to: '/', text: "Home" },
         { to: '/faq', text: "FAQ's" },
         { to: '/features', text: 'Features' },
         { to: '/contact', text: 'Contact' },

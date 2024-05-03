@@ -2,9 +2,21 @@ import React, { useState, useEffect } from "react";
 import { NavLink, useNavigate, useParams } from "react-router-dom";
 import Header from "../components/Header";
 import loginimg from "../assests/Login.png";
+import { useQuery } from "@apollo/react-hooks";
+import gql from 'graphql-tag';
 
 function RegisterPage() {
   const { collegeName } = useParams(); // Get collegeName from URL params
+  let collegen = decodeURIComponent(collegeName);
+
+  const FETCH_COLLEGE_DOMAIN = gql`
+    query {
+      getCollegeDomain(college: "${collegen}")
+    }
+  `;
+
+  const { loading, data } = useQuery(FETCH_COLLEGE_DOMAIN);
+
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
@@ -14,23 +26,6 @@ function RegisterPage() {
   const [emailError, setEmailError] = useState('');
   const [isFormValid, setIsFormValid] = useState(false);
 
-  // Array of predefined college names
-  const predefinedNames = [
-    { name: "NIT Kurushetra", link: "/register/NITK", emailFormat: "@nitk.ac.in" },
-    { name: "NIT Meghalaya", link: "/register/NITM", emailFormat: "@nitm.ac.in" }
-  ];
-
-  // Find the predefined name object that matches the collegeName
-  const selectedCollege = predefinedNames.find(item => item.link === `/register/${collegeName}`);
-  const handleEmailBlur = () => {
-    const isValid = email.endsWith(selectedCollege?.emailFormat);
-    if (!isValid) {
-      setEmailError(`Email must end with ${selectedCollege?.emailFormat}`);
-    } else {
-      setEmailError('');
-    }
-  };
-
   const handleLogin = (e) => {
     e.preventDefault();
     // Implement your login logic here
@@ -39,15 +34,17 @@ function RegisterPage() {
     navigate(`/otppage/${collegeName}/${email}`);
   };
 
+  console.log(data && data.getCollegeDomain);
+
   useEffect(() => {
-    const isValidEmail = email.endsWith(selectedCollege?.emailFormat);
+    const isValidEmail = email.endsWith(data?.getCollegeDomain);
     const isEmailFilled = email.trim() !== '';
     const isNameFilled = name.trim() !== '';
     const isPasswordFilled = password.trim() !== '';
     const isConfirmpassFilled = confirmPass.trim() !== '';
 
     setIsFormValid(isValidEmail && isEmailFilled && isPasswordFilled && isNameFilled && isConfirmpassFilled);
-  }, [email, selectedCollege]);
+  }, [email, name, password, confirmPass]);
 
   return (
     <>
@@ -58,7 +55,7 @@ function RegisterPage() {
             <h1 className="text-2xl font-bold mb-1">Welcome to PlaceMeUP</h1>
             <h3 className="text-lg text-[#737373] mb-3">Please enter the details below to get started</h3>
             <form onSubmit={handleLogin} className="flex flex-col items-center w-full">
-            <div className="mb-2 relative w-full">
+              <div className="mb-2 relative w-full">
                 <h1 htmlFor="name" className="block text-sm font-medium text-gray-700">
                   Name
                 </h1>
@@ -69,8 +66,7 @@ function RegisterPage() {
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   required
-                  onBlur={handleEmailBlur}
-                  placeholder="Enter your email"
+                  placeholder="Enter your name"
                   className="mt-2 p-2 border rounded-md w-full"
                 />
               </div>
@@ -85,7 +81,6 @@ function RegisterPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  onBlur={handleEmailBlur}
                   placeholder="Enter your email"
                   className="mt-2 p-2 border rounded-md w-full"
                 />
@@ -98,12 +93,11 @@ function RegisterPage() {
                   type="text"
                   id="college"
                   name="college"
-                  value={selectedCollege.name }
+                  value={collegen}
                   disabled
                   className="mt-2 p-2 border rounded-md w-full cursor-not-allowed opacity-50"
                 />
               </div>
-
 
               <div className="mb-2 relative w-full">
                 <h1 htmlFor="password" className="block text-sm font-medium text-gray-700">
@@ -137,7 +131,7 @@ function RegisterPage() {
                 />
               </div>
 
-              <button type="submit" className={`bg-[#FFC727] btn text-white px-4 py-2 rounded-md ${!isFormValid ? "opacity-50 cursor-not-allowed":""}`} disabled={!isFormValid}>
+              <button type="submit" className={`bg-[#FFC727] btn text-white px-4 py-2 rounded-md ${!isFormValid ? "opacity-50 cursor-not-allowed" : ""}`} disabled={!isFormValid}>
                 Register
               </button>
             </form>

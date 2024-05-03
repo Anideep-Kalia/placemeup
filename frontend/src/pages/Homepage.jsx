@@ -3,31 +3,50 @@ import Header from "../components/Header";
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/Home.css";
+import { useQuery } from "@apollo/react-hooks";
+import gql from 'graphql-tag';
+
+const FETCH_ALL_COLLEGE_INFO = gql`
+  {
+    getAllCollegeInfo {
+      id
+      adminId
+      collegeDomain
+      collegeName
+      companiesList {
+        name
+        role
+        stipend
+        link
+        expire
+        desc
+      }
+    }
+  }
+`;
+
 function Homepage() {
+  const { loading, data } = useQuery(FETCH_ALL_COLLEGE_INFO);
+  const [collegelist, setCollegelist] = useState([]);
   const [inputValue, setInputValue] = useState('');
   const [suggestions, setSuggestions] = useState([]);
   const inputRef = useRef(null);
   const navigate = useNavigate();
   const [selectedOption, setSelectedOption] = useState(null); // State to store selected option
 
-  const predefinedNames = [
-    { name: "NIT Kurushetra", link: "/register/NITK" },
-    { name: "NIT Meghalaya", link: "/register/NITM" }
-  ];
-
   const handleChange = (e) => {
     const value = e.target.value;
     setInputValue(value);
 
-    const filteredSuggestions = predefinedNames.filter(option =>
-      option.name.toLowerCase().includes(value.toLowerCase())
+    const filteredSuggestions = collegelist.filter(option =>
+      option.collegeName.toLowerCase().includes(value.toLowerCase())
     );
     setSuggestions(filteredSuggestions);
     setSelectedOption(null); // Reset selected option when input value changes
   };
 
   const handleSuggestionClick = (option) => {
-    setInputValue(option.name);
+    setInputValue(option.collegeName);
     setSuggestions([]);
     setSelectedOption(option);
   };
@@ -40,10 +59,13 @@ function Homepage() {
 
   useEffect(() => {
     document.addEventListener("click", handleClickOutside);
+    if (!loading && data) {
+      setCollegelist(data.getAllCollegeInfo);
+    }
     return () => {
       document.removeEventListener("click", handleClickOutside);
     };
-  }, []);
+  }, [loading, data]);
 
   return (
     <>
@@ -55,24 +77,24 @@ function Homepage() {
           <div className="flex flex-col justify-start items-start mt-2">
             <form className="flex flex-row gap-10 justify-center items-center">
               <div className="input-field">
-              {/* <label htmlFor="search" className="label">Search</label> */}
-              <input
-                ref={inputRef}
-                id="search"
-                type="search"
-                pattern=".*\S.*"
-                required
-                value={inputValue}
-                onChange={handleChange}
-                className=""
-              />
-              <span className="caret"></span>
+                {/* <label htmlFor="search" className="label">Search</label> */}
+                <input
+                  ref={inputRef}
+                  id="search"
+                  type="search"
+                  pattern=".*\S.*"
+                  required
+                  value={inputValue}
+                  onChange={handleChange}
+                  className=""
+                />
+                <span className="caret"></span>
               </div>
-              
+
               <button
                 onClick={() => {
                   if (selectedOption) {
-                    navigate(selectedOption.link);
+                    navigate(`/register/${selectedOption.collegeName}`);
                   }
                 }}
                 className={`p-2 border border-black bg-[#d0d0d0] rounded-xl ${!selectedOption ? 'opacity-50 cursor-not-allowed' : ''}`}
@@ -88,7 +110,7 @@ function Homepage() {
                     onClick={() => handleSuggestionClick(option)}
                     className="border-b border-[#d0d0d0] h-12 flex flex-row items-center hover:cursor-pointer px-2 hover:scale-105 rounded-xl  hover:bg-[#dad6d6] text-[#737373]"
                   >
-                    {option.name}
+                    {option.collegeName}
                   </li>
                 ))}
               </ul>

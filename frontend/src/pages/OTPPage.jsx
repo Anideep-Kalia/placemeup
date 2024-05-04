@@ -1,12 +1,16 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAppSelector } from '../redux/hooks';
 import Header from "../components/Header";
 import { useParams } from "react-router-dom";
 
 function OTPPage() {
+
+    const { name, email, collegeName } = useAppSelector((s) => s.register);
+    console.log({name, email, collegeName })
+
   const navigate = useNavigate();
   const [otp, setOTP] = useState('');
-  const { collegeName, email } = useParams();
   const handleOTPSubmit = (e) => {
     e.preventDefault();
     // Implement your OTP verification logic here

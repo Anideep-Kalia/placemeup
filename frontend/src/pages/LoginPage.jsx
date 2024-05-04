@@ -2,31 +2,25 @@ import React, { useState, useEffect } from "react";
 import { NavLink, useNavigate, useParams } from "react-router-dom";
 import Header from "../components/Header";
 import loginimg from "../assests/Login.png";
+import { useQuery } from "@apollo/react-hooks";
+import gql from 'graphql-tag';
 
 function LoginPage() {
   const { collegeName } = useParams(); // Get collegeName from URL params
+  let collegen = decodeURIComponent(collegeName);
+
+  const FETCH_COLLEGE_DOMAIN = gql`
+    query {
+      getCollegeDomain(college: "${collegen}")
+    }
+  `;
+  const { loading, data } = useQuery(FETCH_COLLEGE_DOMAIN);
+
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [emailError, setEmailError] = useState('');
   const [isFormValid, setIsFormValid] = useState(false);
-
-  // Array of predefined college names
-  const predefinedNames = [
-    { name: "NIT Kurushetra", link: "/login/NITK", emailFormat: "@nitk.ac.in" },
-    { name: "NIT Meghalaya", link: "/login/NITM", emailFormat: "@nitm.ac.in" }
-  ];
-
-  // Find the predefined name object that matches the collegeName
-  const selectedCollege = predefinedNames.find(item => item.link === `/login/${collegeName}`);
-  const handleEmailBlur = () => {
-    const isValid = email.endsWith(selectedCollege?.emailFormat);
-    if (!isValid) {
-      setEmailError(`Email must end with ${selectedCollege?.emailFormat}`);
-    } else {
-      setEmailError('');
-    }
-  };
 
   const handleLogin = (e) => {
     e.preventDefault();
@@ -37,12 +31,12 @@ function LoginPage() {
   };
 
   useEffect(() => {
-    const isValidEmail = email.endsWith(selectedCollege?.emailFormat);
+    const isValidEmail = email.endsWith(data?.getCollegeDomain);
     const isEmailFilled = email.trim() !== '';
     const isPasswordFilled = password.trim() !== '';
 
     setIsFormValid(isValidEmail && isEmailFilled && isPasswordFilled);
-  }, [email, selectedCollege]);
+  }, [email]);
 
   return (
     <>
@@ -65,7 +59,6 @@ function LoginPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  onBlur={handleEmailBlur}
                   placeholder="Enter your email"
                   className="mt-2 p-2 border rounded-md w-full"
                 />
@@ -78,7 +71,7 @@ function LoginPage() {
                   type="text"
                   id="college"
                   name="college"
-                  value={selectedCollege.name }
+                  value={collegen}
                   disabled
                   className="mt-2 p-2 border rounded-md w-full cursor-not-allowed opacity-50"
                 />

@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { NavLink, useNavigate, useParams } from "react-router-dom";
+import { useAppSelector, useAppDispatch } from "../redux/hooks";
+import { setUser } from "../redux/slices/register";
 import Header from "../components/Header";
 import loginimg from "../assests/Login.png";
 import { useQuery } from "@apollo/react-hooks";
@@ -14,13 +16,12 @@ function RegisterPage() {
       getCollegeDomain(college: "${collegen}")
     }
   `;
-
   const { loading, data } = useQuery(FETCH_COLLEGE_DOMAIN);
 
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
-  const [rollno, setRollNo] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPass, setConfirmPass] = useState('');
   const [emailError, setEmailError] = useState('');
@@ -28,13 +29,11 @@ function RegisterPage() {
 
   const handleLogin = (e) => {
     e.preventDefault();
-    // Implement your login logic here
-    console.log("Logging in with:", { collegeName, email, password });
-    // Example: Redirect to dashboard after login
+    // Dispatch action to store user data in Redux
+    dispatch(setUser({ name, email, collegeName }));
+    // Example: Redirect to OTP page after login
     navigate(`/otppage/${collegeName}/${email}`);
   };
-
-  console.log(data && data.getCollegeDomain);
 
   useEffect(() => {
     const isValidEmail = email.endsWith(data?.getCollegeDomain);

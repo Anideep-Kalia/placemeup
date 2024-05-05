@@ -1,8 +1,16 @@
 import React from 'react'
+import { NavLink, useNavigate, useParams } from "react-router-dom";
 import { IoSearch } from "react-icons/io5";
 import { LuLogOut } from "react-icons/lu";
 
 function UserHeader() {
+
+    const navigate = useNavigate();
+
+    const loggingout=()=>{
+        localStorage.removeItem('token');
+        navigate(`/`);
+    }
     return (
         <div className='flex flex-row justify-between items-center h-[4.5rem]'>
             <div className="flex items-center justify-start pl-10 bg-[#F1F2F7] w-[16%] gap-2 h-full ">
@@ -24,6 +32,7 @@ function UserHeader() {
             <div className=' bg-[#F1F2F7] rounded-full w-14 flex justify-center items-center h-14 mr-4'>
                 <LuLogOut
                 size={30}
+                onClick={loggingout}
                 />
             </div>
         </div>

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { NavLink, useNavigate, useParams } from "react-router-dom";
 import Header from "../components/Header";
 import loginimg from "../assests/Login.png";
-import { useQuery } from "@apollo/react-hooks";
+import { useQuery, useMutation } from "@apollo/react-hooks";
 import gql from 'graphql-tag';
 
 function LoginPage() {
@@ -16,18 +16,42 @@ function LoginPage() {
   `;
   const { loading, data } = useQuery(FETCH_COLLEGE_DOMAIN);
 
+  const LOGIN_STUDENT = gql`
+    mutation LoginStudent($userid: String!, $password: String!) {
+      loginStudent(userid: $userid, password: $password) {
+        id
+        token
+        userid
+      }
+    }
+  `;
+
+  const [loginStudent, { loading: mutationLoading, error: mutationError, data: mutationData }] = useMutation(LOGIN_STUDENT);
+
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [emailError, setEmailError] = useState('');
   const [isFormValid, setIsFormValid] = useState(false);
 
-  const handleLogin = (e) => {
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      navigate(`/user-dashboard`);
+    }
+  }, [navigate]);
+
+  const handleLogin = async (e) => {
     e.preventDefault();
-    // Implement your login logic here
-    console.log("Logging in with:", { collegeName, email, password });
-    // Example: Redirect to dashboard after login
-    navigate(`/user-dashboard`);
+    try {
+      const { data } = await loginStudent({ variables: { userid: email, password: password } });
+      const token = data.loginStudent.token;
+      localStorage.setItem('token', token);
+      console.log("Logged in successfully!", data.loginStudent);
+      // Redirect to dashboard after login
+      navigate(`/user-dashboard`);
+    } catch (error) {
+      console.error("Login failed!", error);
+    }
   };
 
   useEffect(() => {
@@ -94,8 +118,8 @@ function LoginPage() {
                 />
               </div>
 
-              <button type="submit" className={`bg-[#FFC727] btn text-white px-4 py-2 rounded-md ${!isFormValid ? "opacity-50 cursor-not-allowed":""}`} disabled={!isFormValid}>
-                Login
+              <button type="submit" className={`bg-[#FFC727] btn text-white px-4 py-2 rounded-md ${!isFormValid ? "opacity-50 cursor-not-allowed":""}`} disabled={!isFormValid || mutationLoading}>
+                {mutationLoading ? "Logging in..." : "Login"}
               </button>
             </form>
             <p className="mt-8 text-base font-medium">Don't have an account? <NavLink className={`text-[#FFC727] hover:underline`} to={`/register/${collegeName}`}>Register</NavLink> </p>

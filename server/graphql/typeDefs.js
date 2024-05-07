@@ -64,7 +64,7 @@ module.exports = gql`
     getAllStudents:[StudentInfo!]! #
     getStudentInfo(userid: String!): StudentInfo #
     getStudentByCollege(college: String!): [StudentInfo!]! #
-    getDaysLoggedIn: [String!]! #
+    getDaysLoggedIn(userid: String!): [String!]! #
     getStudentCompanyApplied(company: String!): [StudentInfo!]!
 
     getCollegeAdmin(adminId: ID!): CollegeAdmin
@@ -83,9 +83,9 @@ module.exports = gql`
     registerCollegeAdmin(adminId: String!, password: String!, college: String!, confirmPassword:String!, name:String!): CollegeAdmin! #
     loginCollegeAdmin(adminId: String!, password: String!): CollegeAdmin! #
 
-    addStudentInfo: StudentInfo! #
+    addStudentInfo(userid: String!, college: String!, name:String!): StudentInfo! #
     addCompanyToStudentInfo(company: CompanyInput!): StudentInfo! #
-    updateStudentInfo(name: String, companiesApplied: [CompanyInput], daysLoggedIn: [String]): StudentInfo!
+    updateStudentInfo(userid: String!, name: String, companiesApplied: [CompanyInput], daysLoggedIn: [String]): StudentInfo!
     deleteStudentInfo(userid:String!): Boolean! #
     
 

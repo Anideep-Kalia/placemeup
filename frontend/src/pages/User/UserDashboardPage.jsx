@@ -5,7 +5,6 @@ import UserHeader from '../../components/UserHeader'
 import { FaRegEdit } from "react-icons/fa";
 import { RiDeleteBinLine } from "react-icons/ri";
 import LoginStreak from '../../components/LoginStreak';
-import { VscGitStashApply } from "react-icons/vsc";
 
 function UserDashboardPage() {
     return (

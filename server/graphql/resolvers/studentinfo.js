@@ -1,5 +1,6 @@
 const  StudentInfo  = require('../../models/StudentInfo');
 const checkAuth = require('../../util/check-auth');
+const { UserInputError } = require('apollo-server');
 
 module.exports = {
   Query: {
@@ -39,10 +40,8 @@ module.exports = {
         throw new Error(err);
       }
     },
-    async getDaysLoggedIn(_, {}, context) {
+    async getDaysLoggedIn(_, { userid }) {
       try {
-        const user = checkAuth(context);
-        const { userid } = user;
         const studentInfo = await StudentInfo.findOne({ userid });
         if (studentInfo) {
           return studentInfo.daysLoggedIn;
@@ -83,32 +82,31 @@ module.exports = {
         throw new Error(error);
       }
     },
-    async addStudentInfo(_, {}, context) {
-      const user = checkAuth(context);
-      const { userid } = user; // Extract userid from user object
-    
+    async addStudentInfo(_, { userid, college ,name }) {
       let studentInfo = await StudentInfo.findOne({ userid });
     
       if (!studentInfo) {
         studentInfo = new StudentInfo({
-          name: user.name,
-          college: user.college,
-          userid: userid, // Use extracted userid
+          name: name,
+          college: college,
+          userid: userid, 
           companiesApplied: [],
           daysLoggedIn: [new Date()]
         });
       } else {
-        studentInfo.daysLoggedIn.push(new Date());
+        throw new UserInputError('userid is taken', {
+          errors: {
+            userid: 'This userid is taken'
+          }
+      })
       }
     
       const result = await studentInfo.save();
     
       return result.toObject();
     },
-    async updateStudentInfo(_, { name, companiesApplied, daysLoggedIn }, context) {
+    async updateStudentInfo(_, { userid, name, companiesApplied, daysLoggedIn }) {
       try {
-        const user = checkAuth(context);
-        const { userid } = user;
         let studentInfo = await StudentInfo.findOne({ userid });
     
         if (!studentInfo) {

@@ -17,16 +17,25 @@ function LoginPage() {
   const { loading, data } = useQuery(FETCH_COLLEGE_DOMAIN);
 
   const LOGIN_STUDENT = gql`
-    mutation LoginStudent($userid: String!, $password: String!) {
-      loginStudent(userid: $userid, password: $password) {
+    mutation LoginStudent($password: String!, $userid: String!) {
+      loginStudent(password: $password, userid: $userid) {
         id
         token
         userid
       }
     }
   `;
+  const [loginStudent] = useMutation(LOGIN_STUDENT);
 
-  const [loginStudent, { loading: mutationLoading, error: mutationError, data: mutationData }] = useMutation(LOGIN_STUDENT);
+  const UPDATE_STUDENT_INFO = gql`
+    mutation UpdateStudentInfo($userid: String!) {
+      updateStudentInfo(userid: $userid) {
+        id
+        userid
+        daysLoggedIn
+      }
+    }
+  `;
 
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
@@ -38,19 +47,18 @@ function LoginPage() {
     if (token) {
       navigate(`/user-dashboard`);
     }
-  }, [navigate]);
+  }, []);
 
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const { data } = await loginStudent({ variables: { userid: email, password: password } });
-      const token = data.loginStudent.token;
-      localStorage.setItem('token', token);
-      console.log("Logged in successfully!", data.loginStudent);
-      // Redirect to dashboard after login
+      const { data } = await loginStudent({ variables: { userid: email, password } });
+      localStorage.setItem('token', data.loginStudent.token);
+      await updateStudentInfo({ variables: { userid: email } });
       navigate(`/user-dashboard`);
     } catch (error) {
-      console.error("Login failed!", error);
+      // Handle login error
+      console.error("Login failed:", error);
     }
   };
 
@@ -61,6 +69,8 @@ function LoginPage() {
 
     setIsFormValid(isValidEmail && isEmailFilled && isPasswordFilled);
   }, [email]);
+
+  const [updateStudentInfo] = useMutation(UPDATE_STUDENT_INFO);
 
   return (
     <>
@@ -118,8 +128,8 @@ function LoginPage() {
                 />
               </div>
 
-              <button type="submit" className={`bg-[#FFC727] btn text-white px-4 py-2 rounded-md ${!isFormValid ? "opacity-50 cursor-not-allowed":""}`} disabled={!isFormValid || mutationLoading}>
-                {mutationLoading ? "Logging in..." : "Login"}
+              <button type="submit" className={`bg-[#FFC727] btn text-white px-4 py-2 rounded-md ${!isFormValid ? "opacity-50 cursor-not-allowed":""}`} disabled={!isFormValid}>
+                Login
               </button>
             </form>
             <p className="mt-8 text-base font-medium">Don't have an account? <NavLink className={`text-[#FFC727] hover:underline`} to={`/register/${collegeName}`}>Register</NavLink> </p>

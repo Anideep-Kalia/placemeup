@@ -8,6 +8,7 @@ import ContactUsPage from "./pages/ContactUsPage"
 import UserDashboardPage from "./pages/User/UserDashboardPage"
 import UserOpportunityPage from "./pages/User/UserOpportunityPage"
 import UserApplicationsPage from "./pages/User/UserApplicationsPage"
+import Try from "./pages/Try"
 import RegisterPage from "./pages/RegisterPage"
 
 function App() {
@@ -16,6 +17,7 @@ function App() {
     <BrowserRouter>
     <Routes>
         <Route path='/' element={<Homepage/>}/>
+        <Route path='/try' element={<Try/>}/>
         <Route path='/faq' element={<FaqPage/>}/>
         <Route path='/features' element={<Featurespage/>}/>
         <Route path='/contact' element={<ContactUsPage/>}/>

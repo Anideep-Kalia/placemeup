@@ -4,20 +4,17 @@ import { useAppSelector, useAppDispatch } from "../redux/hooks";
 import { setUser } from "../redux/slices/register";
 import Header from "../components/Header";
 import loginimg from "../assests/Login.png";
-import { useQuery } from "@apollo/react-hooks";
 import axios from "axios"
-import gql from 'graphql-tag';
+import {FETCH_COLLEGE_DOMAIN} from '../gqloperations/queries'
+import { useMutation, useQuery } from "@apollo/react-hooks";
+
 
 function RegisterPage() {
   const { collegeName } = useParams(); // Get collegeName from URL params
   let collegen = decodeURIComponent(collegeName);
 
-  const FETCH_COLLEGE_DOMAIN = gql`
-    query {
-      getCollegeDomain(college: "${collegen}")
-    }
-  `;
-  const { loading, data } = useQuery(FETCH_COLLEGE_DOMAIN);
+  const { loading, error, data } = useQuery(FETCH_COLLEGE_DOMAIN, { variables: { college: collegen } });
+  
 
   const dispatch = useAppDispatch();
   const navigate = useNavigate();

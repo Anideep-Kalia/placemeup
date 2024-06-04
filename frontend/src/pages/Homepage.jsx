@@ -4,29 +4,11 @@ import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/Home.css";
 import { useQuery } from "@apollo/react-hooks";
-import gql from 'graphql-tag';
+import {FETCH_ALL_COLLEGE_INFO} from '../gqloperations/queries'
 
-const FETCH_ALL_COLLEGE_INFO = gql`
-  {
-    getAllCollegeInfo {
-      id
-      adminId
-      collegeDomain
-      collegeName
-      companiesList {
-        name
-        role
-        stipend
-        link
-        expire
-        desc
-      }
-    }
-  }
-`;
 
 function Homepage() {
-  const { loading, data } = useQuery(FETCH_ALL_COLLEGE_INFO);
+const { loading, error, data } = useQuery(FETCH_ALL_COLLEGE_INFO);
   const [collegelist, setCollegelist] = useState([]);
   const [inputValue, setInputValue] = useState('');
   const [suggestions, setSuggestions] = useState([]);
@@ -34,6 +16,7 @@ function Homepage() {
   const navigate = useNavigate();
   const [selectedOption, setSelectedOption] = useState(null); // State to store selected option
 
+  
   const handleChange = (e) => {
     const value = e.target.value;
     setInputValue(value);

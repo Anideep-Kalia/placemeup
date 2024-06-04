@@ -27,6 +27,10 @@ dbConnection();
 app.use(express.json());
 app.use(cors());
 
+app.get('/',(req,res)=>{
+  res.json("this is it")
+})
+
 const otpSchema = new mongoose.Schema({
   email: String,
   otp: String,

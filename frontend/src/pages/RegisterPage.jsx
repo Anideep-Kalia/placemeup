@@ -5,6 +5,7 @@ import { setUser } from "../redux/slices/register";
 import Header from "../components/Header";
 import loginimg from "../assests/Login.png";
 import { useQuery } from "@apollo/react-hooks";
+import axios from "axios"
 import gql from 'graphql-tag';
 
 function RegisterPage() {
@@ -27,8 +28,18 @@ function RegisterPage() {
   const [emailError, setEmailError] = useState('');
   const [isFormValid, setIsFormValid] = useState(false);
 
-  const handleLogin = (e) => {
+  const handleLogin =async (e) => {
     e.preventDefault();
+    try {
+      let data = JSON.stringify({
+          email:email
+        });
+    await axios.post('http://localhost:5001/generate-otp',data,{headers:{"Content-Type" : "application/json"}});
+    alert('OTP sent to your registered college email');
+  } catch (error) {
+    console.error('Error generating OTP', error);
+    alert('Error sending OTP');
+  }
     // Dispatch action to store user data in Redux
     dispatch(setUser({ name, email, collegeName }));
     // Example: Redirect to OTP page after login

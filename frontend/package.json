@@ -12,6 +12,7 @@
     "apollo-client": "^2.6.10",
     "apollo-link-context": "^1.0.20",
     "apollo-link-http": "^1.5.17",
+    "axios": "^1.7.2",
     "chart.js": "^4.4.2",
     "firebase": "^8.7.1",
     "graphql": "^15.8.0",

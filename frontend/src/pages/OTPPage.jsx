@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAppSelector } from '../redux/hooks';
 import Header from "../components/Header";
+import axios from 'axios'
 import { useParams } from "react-router-dom";
 
 function OTPPage() {
@@ -11,12 +12,16 @@ function OTPPage() {
 
   const navigate = useNavigate();
   const [otp, setOTP] = useState('');
-  const handleOTPSubmit = (e) => {
+
+  const handleOTPSubmit = async(e) => {
     e.preventDefault();
-    // Implement your OTP verification logic here
-    console.log("Verifying OTP:", otp, email);
-    // Example: Redirect to dashboard after OTP verification
-    navigate("/user-dashboard");
+      try {
+        await axios.post('http://localhost:5001/validate-otp', { email, otp });
+        navigate("/user-dashboard");
+      } catch (error) {
+        console.error('Error validating OTP', error);
+        alert('Invalid OTP');
+      }
   };
 
   return (

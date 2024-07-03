@@ -50,32 +50,8 @@ const Header = ({val}) => {
               </NavLink>
             </li>
           ))}
+          <li className="fixed right-0 bg-red-600 text-white p-6 pl-8 text-[#FFC727] rounded-l-lg">admin</li>
         </ul>
-
-        {/* {isUser && 
-        <ul className={listClassName}>
-        <li>
-              <NavLink
-                to="/signin"
-                className={linkClassName}
-                onClick={closeMobileMenu}
-              >
-                <button className="btn bg-white text-black px-3 py-2 lg:mt-0 mt-2">Sign In</button>
-
-              </NavLink>
-            </li>
-            <li>
-              <NavLink
-                to="/register"
-                className={linkClassName}
-                onClick={closeMobileMenu}
-              >
-                <button className="btn px-3 py-2 lg:mt-0 mt-2 bg-[#FFC727] text-white">Register</button>
-
-              </NavLink>
-            </li>
-        </ul>
-        } */}
       </>
     );
   };

@@ -8,6 +8,7 @@ import FaqPage from "./pages/FaqPage"
 import Featurespage from "./pages/Featurespage"
 import ContactUsPage from "./pages/ContactUsPage"
 import UserDashboardPage from "./pages/User/UserDashboardPage"
+import AdminDashboardPage from "./pages/Admin/UserDashboardPage"
 import UserOpportunityPage from "./pages/User/UserOpportunityPage"
 import UserApplicationsPage from "./pages/User/UserApplicationsPage"
 import Try from "./pages/Try"
@@ -29,6 +30,7 @@ function App() {
         <Route path="/register/:collegeName" element={<RegisterPage/>} />
         <Route path="/otppage/:collegeName/:email" element={<OTPPage />} /> 
         <Route path="/user-dashboard" element={<UserDashboardPage/>}/>
+        <Route path="/admin-dashboard" element={<AdminDashboardPage/>}/>
         <Route path="/user-opportunity" element={<UserOpportunityPage/>}/>
         <Route path="/user-applications" element={<UserApplicationsPage/>}/>
     </Routes>

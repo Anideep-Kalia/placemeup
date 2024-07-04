@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { NavLink, useNavigate, useParams } from "react-router-dom";
-import Header from "../components/Header";
+import Header from "../components/AdminHeader";
 import loginimg from "../assests/Login.png";
 import { useQuery, useMutation } from "@apollo/react-hooks";
 import gql from 'graphql-tag';
@@ -9,23 +9,16 @@ function LoginPage() {
   const { collegeName } = useParams(); // Get collegeName from URL params
   let collegen = decodeURIComponent(collegeName);
 
-  const FETCH_COLLEGE_DOMAIN = gql`
-    query {
-      getCollegeDomain(college: "${collegen}")
-    }
-  `;
-  const { loading, data } = useQuery(FETCH_COLLEGE_DOMAIN);
-
-  const LOGIN_STUDENT = gql`
-    mutation LoginStudent($password: String!, $userid: String!) {
-      loginStudent(password: $password, userid: $userid) {
+  const LOGIN_ADMIN = gql`
+    mutation loginCollegeAdmin($password: String!, $adminId: String!) {
+      loginCollegeAdmin(password: $password, adminId: $adminId) {
         id
         token
-        userid
+        adminId
       }
     }
   `;
-  const [loginStudent] = useMutation(LOGIN_STUDENT);
+  const [loginCollegeAdmin] = useMutation(LOGIN_ADMIN);
 
 
   const navigate = useNavigate();
@@ -34,31 +27,23 @@ function LoginPage() {
   const [isFormValid, setIsFormValid] = useState(false);
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('token-admin');
     if (token) {
-      navigate(`/user-dashboard`);
+      navigate(`/admin-dashboard`);
     }
   }, []);
 
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const { data } = await loginStudent({ variables: { userid: email, password } });
-      localStorage.setItem('token', data.loginStudent.token);
-      navigate(`/user-dashboard`);
+      const { data } = await loginCollegeAdmin({ variables: { adminId: email, password } });
+      localStorage.setItem('token-admin', data.loginCollegeAdmin.token);
+      navigate(`/admin-dashboard`);
     } catch (error) {
       // Handle login error
       console.error("Login failed:", error);
     }
   };
-
-  useEffect(() => {
-    const isValidEmail = email.endsWith(data?.getCollegeDomain);
-    const isEmailFilled = email.trim() !== '';
-    const isPasswordFilled = password.trim() !== '';
-
-    setIsFormValid(isValidEmail && isEmailFilled && isPasswordFilled);
-  }, [email]);
 
 
   return (
@@ -117,12 +102,10 @@ function LoginPage() {
                 />
               </div>
 
-              <button type="submit" className={`bg-[#FFC727] btn text-white px-4 py-2 rounded-md ${!isFormValid ? "opacity-50 cursor-not-allowed":""}`} disabled={!isFormValid}>
+              <button type="submit" className={`bg-[#FFC727] btn text-white px-4 py-2 rounded-md `}>
                 Login
               </button>
-            </form>
-            <p className="mt-8 text-base font-medium">Don't have an account? <NavLink className={`text-[#FFC727] hover:underline`} to={`/register/${collegeName}`}>Register</NavLink> </p>
-            
+            </form>            
           </div>
           <div className="">
             <img src={loginimg} className="w-[25rem] h-[30rem]" alt="login" />
@@ -134,3 +117,4 @@ function LoginPage() {
 }
 
 export default LoginPage;
+ 

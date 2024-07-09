@@ -8,9 +8,11 @@ import FaqPage from "./pages/FaqPage"
 import Featurespage from "./pages/Featurespage"
 import ContactUsPage from "./pages/ContactUsPage"
 import UserDashboardPage from "./pages/User/UserDashboardPage"
-import AdminDashboardPage from "./pages/Admin/UserDashboardPage"
+import AdminDashboardPage from "./pages/Admin/AdminDashboardPage"
 import UserOpportunityPage from "./pages/User/UserOpportunityPage"
+import AdminOpportunityPage from "./pages/Admin/AdminOpportunityPage"
 import UserApplicationsPage from "./pages/User/UserApplicationsPage"
+import AdminApplicationsPage from "./pages/Admin/AdminApplicationsPage"
 import Try from "./pages/Try"
 import RegisterPage from "./pages/RegisterPage"
 
@@ -32,7 +34,9 @@ function App() {
         <Route path="/user-dashboard" element={<UserDashboardPage/>}/>
         <Route path="/admin-dashboard" element={<AdminDashboardPage/>}/>
         <Route path="/user-opportunity" element={<UserOpportunityPage/>}/>
+        <Route path="/admin-opportunity" element={<AdminOpportunityPage/>}/>
         <Route path="/user-applications" element={<UserApplicationsPage/>}/>
+        <Route path="/admin-applications" element={<AdminApplicationsPage/>}/>
     </Routes>
     </BrowserRouter>
     </>

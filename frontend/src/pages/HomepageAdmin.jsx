@@ -1,5 +1,5 @@
 import { FaArrowRight } from "react-icons/fa6";
-import Header from "../components/AdminHeader";
+import Header from "../components/Admin/AdminHeader";
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/Home.css";

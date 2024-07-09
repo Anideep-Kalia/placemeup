@@ -2,8 +2,8 @@ import { useState } from "react";
 import { NavLink } from "react-router-dom";
 import { IoClose, IoMenu, IoPerson } from "react-icons/io5";
 import { useMediaQuery } from "react-responsive";
-import "../styles/Header.css"
-import { Headerconfig } from "../config"
+import "../../styles/Header.css"
+import { Headerconfig } from "../../config"
 import { FaAngleDown, FaAngleUp } from "react-icons/fa6";
 
 const Header = ({val}) => {

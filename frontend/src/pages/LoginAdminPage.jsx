@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { NavLink, useNavigate, useParams } from "react-router-dom";
-import Header from "../components/AdminHeader";
+import Header from "../components/Admin/AdminHeader";
 import loginimg from "../assests/Login.png";
 import { useQuery, useMutation } from "@apollo/react-hooks";
 import gql from 'graphql-tag';
+import { useDispatch } from "react-redux";
+import { setAdminId } from "../redux/slices/collegeAdminSlice";
 
 function LoginPage() {
   const { collegeName } = useParams(); // Get collegeName from URL params
+  const dispatch = useDispatch();
   let collegen = decodeURIComponent(collegeName);
 
   const LOGIN_ADMIN = gql`
@@ -38,6 +41,7 @@ function LoginPage() {
     try {
       const { data } = await loginCollegeAdmin({ variables: { adminId: email, password } });
       localStorage.setItem('token-admin', data.loginCollegeAdmin.token);
+      dispatch(setAdminId(data.loginCollegeAdmin.adminId));
       navigate(`/admin-dashboard`);
     } catch (error) {
       // Handle login error

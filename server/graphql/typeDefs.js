@@ -68,10 +68,11 @@ module.exports = gql`
     getStudentCompanyApplied(company: String!): [StudentInfo!]!
 
     getCollegeAdmin(adminId: ID!): CollegeAdmin
+    getAdmin(token: String!): String!
 
     getAllCollegeInfo: [CollegeInfo!]! #
-    getCollegeInfo(adminId: ID!): CollegeInfo #
-    getCompaniesList(adminId: ID!): [Company!]! #
+    getCollegeInfo: CollegeInfo #
+    getCompaniesList: [Company!]! #
     getCollegeDomain(college: String!): String! #
   }
 

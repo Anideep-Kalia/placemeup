@@ -3,8 +3,10 @@ const checkAuth = require('../../util/check-auth');
 
 module.exports = {
   Query: {
-    async getCollegeInfo(_, { adminId }) {
+    async getCollegeInfo(_,__,context) {
       try {
+        const user = checkAuth(context);
+        const { adminId } = user; 
         const collegeInfo = await CollegeInfo.findOne({ adminId });
         if (collegeInfo) {
           return collegeInfo;
@@ -15,8 +17,10 @@ module.exports = {
         throw new Error(err);
       }
     },
-    async getCompaniesList(_, { adminId }) {
+    async getCompaniesList(_,__,context) {
       try {
+        const user = checkAuth(context);
+        const { adminId } = user; 
         const collegeInfo = await CollegeInfo.findOne({ adminId });
         if (collegeInfo) {
           return collegeInfo.companiesList;
@@ -46,6 +50,15 @@ module.exports = {
       } catch (err) {
         throw new Error(err);
       }
+    }
+  },
+  async getAdmin(_,{ token }){
+    try {
+      const user = checkAuth(token);
+      const { adminId } = user; 
+      return adminId;
+    } catch (error) {
+      throw new Error(error);
     }
   },
 

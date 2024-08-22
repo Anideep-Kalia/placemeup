@@ -33,6 +33,7 @@ function LoginPage() {
     e.preventDefault();
     try {
       const { data } = await loginStudent({ variables: { userid: email, password:password } });
+      console.log(data)
       localStorage.setItem('token', data.loginStudent.token);
       await updateStudentInfo({ variables: { userid: email } });
       navigate(`/user-dashboard`);

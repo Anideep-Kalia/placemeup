@@ -4,17 +4,21 @@ import { useAppSelector } from '../redux/hooks';
 import Header from "../components/Header";
 import axios from 'axios'
 import { useParams } from "react-router-dom";
+import { REGISTER_STUDENT} from '../gqloperations/mutations';
+import { useMutation, useQuery } from "@apollo/react-hooks";
 
 function OTPPage() {
 
     const { name, email, collegeName } = useAppSelector((s) => s.register);
     console.log({name, email, collegeName })
 
-  const navigate = useNavigate();
-  const [otp, setOTP] = useState('');
+    const [registerStudent] = useMutation(REGISTER_STUDENT);
 
-  const handleOTPSubmit = async(e) => {
-    e.preventDefault();
+    const navigate = useNavigate();
+    const [otp, setOTP] = useState('');
+
+    const handleOTPSubmit = async(e) => {
+      e.preventDefault();
       try {
         await axios.post('http://localhost:5001/validate-otp', { email, otp });
         navigate("/user-dashboard");
@@ -22,7 +26,7 @@ function OTPPage() {
         console.error('Error validating OTP', error);
         alert('Invalid OTP');
       }
-  };
+    };
 
   return (
     <>

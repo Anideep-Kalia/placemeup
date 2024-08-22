@@ -33,6 +33,8 @@ function RegisterPage() {
 
   const handleLogin =async (e) => {
     e.preventDefault();
+    const { data } = await registerStudent({ variables: { userid: email, college:collegen, password: password, confirmPassword: confirmPass, name: name } });
+    localStorage.setItem('token', data.registerStudent.token);
     try {
       let data = JSON.stringify({
           email:email

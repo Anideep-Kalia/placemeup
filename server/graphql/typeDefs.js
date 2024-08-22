@@ -73,7 +73,7 @@ module.exports = gql`
     getAllCollegeInfo: [CollegeInfo!]! #
     getCollegeInfo: CollegeInfo #
     getCompaniesList: [Company!]! #
-    getCollegeDomain(college: String!): String! #
+    getCollegeDomain(collegeName: String!): String! #
   }
 
   type Mutation {

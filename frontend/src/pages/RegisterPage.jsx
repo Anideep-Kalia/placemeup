@@ -6,14 +6,20 @@ import Header from "../components/Header";
 import loginimg from "../assests/Login.png";
 import axios from "axios"
 import {FETCH_COLLEGE_DOMAIN} from '../gqloperations/queries'
+import { REGISTER_STUDENT} from '../gqloperations/mutations';
 import { useMutation, useQuery } from "@apollo/react-hooks";
 
 
+
+
 function RegisterPage() {
-  const { collegeName } = useParams(); // Get collegeName from URL params
+  const { collegeName } = useParams(); 
   let collegen = decodeURIComponent(collegeName);
 
-  const { loading, error, data } = useQuery(FETCH_COLLEGE_DOMAIN, { variables: { college: collegen } });
+  console.log(collegen)
+
+  const { loading, error, data } = useQuery(FETCH_COLLEGE_DOMAIN, { variables: { collegeName: collegen } });
+  const [registerStudent] = useMutation(REGISTER_STUDENT);
   
 
   const dispatch = useAppDispatch();
@@ -32,18 +38,19 @@ function RegisterPage() {
           email:email
         });
     await axios.post('http://localhost:5001/generate-otp',data,{headers:{"Content-Type" : "application/json"}});
-    alert('OTP sent to your registered college email');
   } catch (error) {
+    console.log(error)
     console.error('Error generating OTP', error);
     alert('Error sending OTP');
   }
-    // Dispatch action to store user data in Redux
+
     dispatch(setUser({ name, email, collegeName }));
-    // Example: Redirect to OTP page after login
+
     navigate(`/otppage/${collegeName}/${email}`);
   };
 
   useEffect(() => {
+    console.log(data?data:"")
     const isValidEmail = email.endsWith(data?.getCollegeDomain);
     const isEmailFilled = email.trim() !== '';
     const isNameFilled = name.trim() !== '';

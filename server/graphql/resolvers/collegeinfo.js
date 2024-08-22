@@ -31,18 +31,19 @@ module.exports = {
         throw new Error(err);
       }
     },
-    async getCollegeDomain(_, { college }) {
+    async getCollegeDomain(_, { collegeName }) {
       try {
-        const collegeInfo = await CollegeInfo.findOne({ college });
+        const collegeInfo = await CollegeInfo.findOne({ collegeName });
         if (collegeInfo) {
           return collegeInfo.collegeDomain;
         } else {
           throw new Error('College Info not found');
         }
       } catch (err) {
-        throw new Error(err);
+        throw err;
       }
-    },
+    }
+    ,
     async getAllCollegeInfo() {
       try {
         const collegeInfoList = await CollegeInfo.find();

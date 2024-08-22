@@ -1,8 +1,8 @@
 import { gql } from 'graphql-tag';
 
 export const FETCH_COLLEGE_DOMAIN = gql`
-  query GetCollegeDomain($college: String!) {
-    getCollegeDomain(college: $college)
+  query GetCollegeDomain($collegeName: String!) {
+    getCollegeDomain(collegeName: $collegeName)
   }
 `;
 
@@ -38,3 +38,5 @@ query getAllCollegeInfo
     }
   }
 `;
+
+

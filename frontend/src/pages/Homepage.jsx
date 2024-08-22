@@ -42,7 +42,9 @@ const { loading, error, data } = useQuery(FETCH_ALL_COLLEGE_INFO);
 
   useEffect(() => {
     document.addEventListener("click", handleClickOutside);
+    
     if (!loading && data) {
+      console.log(data.getAllCollegeInfo)
       setCollegelist(data.getAllCollegeInfo);
     }
     return () => {

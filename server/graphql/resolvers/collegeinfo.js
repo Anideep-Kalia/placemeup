@@ -49,6 +49,7 @@ module.exports = {
         const collegeInfoList = await CollegeInfo.find();
         return collegeInfoList;
       } catch (err) {
+        console.log(err)
         throw new Error(err);
       }
     }
